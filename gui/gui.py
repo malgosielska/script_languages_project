@@ -36,6 +36,7 @@ class MainWindow(QMainWindow):
         self.ingrediens_label = QLabel("SELECT INGREDIENTS")
         self.ingrediens_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ingrediens_label.setStyleSheet("font-weight: bold;")
+        self.ingrediens_label.setFixedSize(400, 30)  # Ustawienie szerokości na 400 pikseli i wysokości na 30 pikseli
         self.left_layout.addWidget(self.ingrediens_label)
 
         self.selected_ingrediens = []
@@ -51,6 +52,7 @@ class MainWindow(QMainWindow):
         # Tworzę wertykalny right_layout
         self.right_layout = QVBoxLayout()
         self.main_layout.addLayout(self.right_layout)
+        
 
         # Przycisk "Generate Recipes" na samej górze
         self.button = QPushButton("Generate Recipes")
@@ -58,26 +60,14 @@ class MainWindow(QMainWindow):
         self.right_layout.addWidget(self.button, alignment=Qt.AlignTop)
 
         self.recipes_list = QListWidget()
+        list_palette = self.recipes_list.palette()
+        list_palette.setColor(QPalette.ColorRole.Base, Qt.white)
+        self.recipes_list.setPalette(list_palette)
         self.right_layout.addWidget(self.recipes_list)
+
 
     def generate_recipes(self):
         # todo algorytm wyszukujacy przepisy - do napisania
-
-        # selected_ingredients = [
-        #     self.ingredients_list.item(i).text()
-        #     for i in range(self.ingredients_list.count())
-        # ]
-        # print("Selected Ingredients:", selected_ingredients)
-        #
-        # # Wyświetlanie przepisów po kliknięciu przycisku
-        # self.recipes_list.clear()
-        # matching_recipes = [recipe for recipe in self.recipes if
-        #                     all(ingredient in selected_ingredients for ingredient in recipe["ingredients"])]
-        # if matching_recipes:
-        #     for recipe in matching_recipes:
-        #         self.recipes_list.addItem(recipe["name"])
-        # else:
-        #     self.recipes_list.addItem("No recipes found")
         self.recipes_list.addItems(self.recipes)
 
 
