@@ -6,6 +6,7 @@ from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout,
                                QPushButton, QVBoxLayout, QWidget, QStyleFactory, QMainWindow, QLabel, QListWidget,
                                QCheckBox, QScrollArea)
 
+from database_handler.recipe_generator import get_recipes_by_ingredients
 # from database_handler.recipe_generator import generate_recipes
 from database_handler.utils import get_ingredients_names, get_recipes_names
 
@@ -108,17 +109,17 @@ class MainWindow(QMainWindow):
         # print(self.handle_checkbox)
         print("Selected Ingredients:", self.selected_ingrediens)
         # # Wyświetlanie przepisów po kliknięciu przycisku
-        self.recipes_list.clear()
-        # matching_recipes = [recipe for recipe in gui.recipes if
-        #                     all(ingredient in gui.selected_ingredients for ingredient in
-        #                         recipe["specific_ingredients"])]
-        # if matching_recipes:
-        #     for recipe in matching_recipes:
-        #         gui.recipes_list.addItem(recipe["recipe_title"])
-        # else:
-        self.recipes_list.addItem("No recipes found")
+        # self.recipes_list.clear()
+        # # matching_recipes = [recipe for recipe in gui.recipes if
+        # #                     all(ingredient in gui.selected_ingredients for ingredient in
+        # #                         recipe["specific_ingredients"])]
+        # # if matching_recipes:
+        # #     for recipe in matching_recipes:
+        # #         gui.recipes_list.addItem(recipe["recipe_title"])
+        # # else:
+        # self.recipes_list.addItem("No recipes found")
         # gui.recipes_list.addItems(gui.recipes)
-
+        get_recipes_by_ingredients(self.selected_ingrediens)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
