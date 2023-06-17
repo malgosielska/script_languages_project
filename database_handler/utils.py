@@ -1,5 +1,6 @@
 from peewee import *
-from create_database import Ingredient, Recipe
+
+from database_handler.create_database import Recipe, Ingredient, IngredientInRecipe
 
 
 def get_recipes_names():
@@ -7,6 +8,7 @@ def get_recipes_names():
     recipes = Recipe.select()
     for recipe in recipes:
         names.append(recipe.name)
+    return names
 
 
 def get_ingredients_names():
@@ -14,8 +16,4 @@ def get_ingredients_names():
     ingredients = Ingredient.select()
     for ingredient in ingredients:
         names.append(ingredient.name)
-
-
-
-
-
+    return names

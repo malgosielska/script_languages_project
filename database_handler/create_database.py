@@ -1,7 +1,7 @@
 import csv
 from peewee import *
 
-database = SqliteDatabase('recipes.db')
+database = SqliteDatabase('../database_handler/recipes.db')
 
 
 # Definicja modeli tabel
