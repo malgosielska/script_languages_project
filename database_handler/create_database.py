@@ -13,7 +13,7 @@ class Ingredient(Model):
 
 
 class Recipe(Model):
-    name = CharField()
+    name = CharField(unique=True)
     ingredients_desc = TextField()
     instructions = TextField()
 
@@ -27,7 +27,6 @@ class IngredientInRecipe(Model):
 
     class Meta:
         database = database
-
 
 
 def create_tables():

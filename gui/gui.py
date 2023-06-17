@@ -4,8 +4,9 @@ from PySide6.QtCore import (Qt)
 from PySide6.QtGui import (QColor, QPalette, QPixmap)
 from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout,
                                QPushButton, QVBoxLayout, QWidget, QStyleFactory, QMainWindow, QLabel, QListWidget,
-                               QCheckBox, QScrollArea)
+                               QCheckBox, QScrollArea, QLineEdit)
 
+from database_handler.ingredient_autocompleting import search_ingredients_by_prefix
 from database_handler.recipe_generator import get_recipes_by_ingredients
 # from database_handler.recipe_generator import generate_recipes
 from database_handler.utils import get_ingredients_names, get_recipes_names
@@ -48,6 +49,12 @@ class MainWindow(QMainWindow):
         self.ingrediens_label.setFixedSize(400, 30)  # Ustawienie szerokości na 400 pikseli i wysokości na 30 pikseli
         self.left_layout.addWidget(self.ingrediens_label)
 
+        self.search_input = QLineEdit()
+        self.search_button = QPushButton("Search")
+        self.left_layout.addWidget(self.search_input)
+        self.left_layout.addWidget(self.search_button)
+        self.ingredients = self.search_button.clicked.connect(
+            self.search_ingredients_by_prefix(self.search_input.text()))
         self.selected_ingrediens = []
         self.checkboxes_list = []
         # Wyświetlanie elementów listy składników
@@ -104,6 +111,12 @@ class MainWindow(QMainWindow):
                 selected_ingredients.append(ingredient)
         return selected_ingredients
 
+    def search_ingredients_by_prefix(self, prefix):
+        # Tworzenie zapytania do bazy danych
+        print("lmao")
+        # self.ingredients = search_ingredients_by_prefix(prefix)
+        # self.checkboxes_layout.clear()
+        # self.checkboxes_layout.addWidget()
     def generate_recipes(self):
         self.selected_ingrediens = self.handle_checkbox()
         # print(self.handle_checkbox)
@@ -119,7 +132,14 @@ class MainWindow(QMainWindow):
         # # else:
         # self.recipes_list.addItem("No recipes found")
         # gui.recipes_list.addItems(gui.recipes)
-        get_recipes_by_ingredients(self.selected_ingrediens)
+
+        recipe = get_recipes_by_ingredients(self.selected_ingrediens)
+        if recipe:
+            self.recipes_list.addItems(recipe)
+            print(recipe)
+        else:
+            self.recipes_list.addItem("No recipes found")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -1,6 +1,6 @@
 from peewee import *
 
-from database_handler.create_database import Recipe, IngredientInRecipe
+from database_handler.create_database import Recipe, IngredientInRecipe, Ingredient
 
 database = SqliteDatabase('../database_handler/recipes.db')
 
@@ -20,17 +20,42 @@ def get_recipe_ingredients(recipe_id):
     return result
 
 
-def get_recipes_by_ingredients(ingredient_ids):
+def get_recipes_by_ingredients(ingredient_names):
     result = []
     recipes = get_all_recipe_ids()
-
+    ingredient_ids = get_ids_by_names(ingredient_names)
     for recipe_id in recipes:
         ingredients_in_recipe = get_recipe_ingredients(recipe_id)
         if all(ingredient in ingredient_ids for ingredient in ingredients_in_recipe):
             result.append(recipe_id)
 
-    return result
+    return get_names_by_ids(result)
 
 
-list = [1, 2, 3, 4, 13, 14, 15, 16]
+def get_ids_by_names(names):
+    ids = []
+    ingredients = Ingredient.select().where(Ingredient.name.in_(names))
+    for ingredient in ingredients:
+        ids.append(ingredient.id)
+    return ids
+
+
+def get_names_by_ids(ids):
+    names = []
+    recipes = Recipe.select().where(Recipe.id.in_(ids))
+    for recipe in recipes:
+        names.append(recipe.name)
+    return names
+
+
+# Metoda do pobierania opisu składników i instrukcji na podstawie nazwy przepisu
+def get_details_by_name(name):
+    try:
+        recipe = Recipe.get(Recipe.name == name)
+        return recipe.ingredients_desc, recipe.instructions
+    except Recipe.DoesNotExist:
+        return None, None
+
+
+list = ["eggs", "onion", "bell pepper", "tomato"]
 print(get_recipes_by_ingredients(list))
