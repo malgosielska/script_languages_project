@@ -74,16 +74,17 @@ class MainWindow(QMainWindow):
         # self.set(scroll_area)
         self.left_layout.addWidget(self.scroll_area)
 
+        self.button_add_selected = QPushButton("Add selected")
+        self.button_add_selected.setStyleSheet("font-size: 14px;")
         self.button_select_all = QPushButton("Select all")
         self.button_select_all.setStyleSheet("font-size: 14px;")
         self.button_unselect_all = QPushButton("Unselect all")
         self.button_unselect_all.setStyleSheet("font-size: 14px;")
-        self.button_add_selected = QPushButton("Add selected")
-        self.button_add_selected.setStyleSheet("font-size: 14px;")
 
+        self.left_layout.addWidget(self.button_add_selected)
         self.left_layout.addWidget(self.button_select_all)
         self.left_layout.addWidget(self.button_unselect_all)
-        self.left_layout.addWidget(self.button_add_selected)
+
         self.left_layout.addStretch(1)
 
         self.button_select_all.clicked.connect(self.select_all)
@@ -122,7 +123,7 @@ class MainWindow(QMainWindow):
         self.right_layout.addWidget(self.recipes_list)
         self.recipes_list.itemClicked.connect(self.opening_instructions)
         self.selected_i.itemClicked.connect(self.delete_selected_i)
-
+        self.recipes_list.setStyleSheet("font-size: 14px;")
         self.button = QPushButton("Delete")
         self.button.setStyleSheet("font-size: 14px;")
         self.del_all = QPushButton("Delete all")
