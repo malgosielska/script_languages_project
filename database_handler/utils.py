@@ -1,6 +1,4 @@
-from peewee import *
-
-from database_handler.create_database import Recipe, Ingredient, IngredientInRecipe
+from database_handler.create_database import Recipe, Ingredient
 
 
 def get_recipes_names():

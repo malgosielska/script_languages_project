@@ -1,10 +1,9 @@
-import csv
 from peewee import *
 
 database = SqliteDatabase('../database_handler/recipes.db')
 
 
-# Definicja modeli tabel
+# definitions of table models
 class Ingredient(Model):
     name = CharField(unique=True)
 

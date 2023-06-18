@@ -48,14 +48,9 @@ def get_names_by_ids(ids):
     return names
 
 
-# Metoda do pobierania opisu składników i instrukcji na podstawie nazwy przepisu
 def get_details_by_name(name):
     try:
         recipe = Recipe.get(Recipe.name == name)
         return recipe.ingredients_desc, recipe.instructions
     except Recipe.DoesNotExist:
         return None, None
-
-
-list = ["eggs", "onion", "bell pepper", "tomato"]
-print(get_recipes_by_ingredients(list))
