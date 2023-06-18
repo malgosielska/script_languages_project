@@ -58,7 +58,7 @@ class MainWindow(QMainWindow):
         self.checkboxes_layout = QVBoxLayout()
 
         self.checkboxes_widget.setLayout(self.checkboxes_layout)
-        self.make_checkboxes(ingredients)
+        self.make_checkboxes(ingredients, False)
         # self.selected_ingrediens.append(ingredient)
         self.search_button.clicked.connect(self.search_ingredients_by_prefix)
 
@@ -71,6 +71,19 @@ class MainWindow(QMainWindow):
         # Dodawanie kontenera przewijania do głównego okna
         # self.set(scroll_area)
         self.left_layout.addWidget(self.scroll_area)
+
+        self.button_select_all = QPushButton("Select all")
+        self.button_unselect_all = QPushButton("Unselect all")
+        self.button_add_selected = QPushButton("Add selected")
+
+        self.left_layout.addWidget(self.button_select_all)
+        self.left_layout.addWidget(self.button_unselect_all)
+        self.left_layout.addWidget(self.button_add_selected)
+        self.left_layout.addStretch(1)
+
+        self.button_select_all.clicked.connect(self.select_all)
+        self.button_unselect_all.clicked.connect(self.unselect_all)
+        self.button_add_selected.clicked.connect(self.add_selected)
 
         self.central_layout = QVBoxLayout()
         self.main_layout.addLayout(self.central_layout)
@@ -101,7 +114,14 @@ class MainWindow(QMainWindow):
         self.recipes_list.setPalette(list_palette)
         self.right_layout.addWidget(self.recipes_list)
         self.recipes_list.itemClicked.connect(self.opening_instructions)
+        self.selected_i.itemClicked.connect(self.delete_selected_i)
 
+        self.button = QPushButton("Delete")
+        self.del_all = QPushButton("Delete all")
+        self.central_layout.addWidget(self.button, alignment=Qt.AlignBottom)
+        self.button.clicked.connect(self.delete)
+        self.central_layout.addWidget(self.del_all)
+        self.del_all.clicked.connect(self.delete_all)
     def handle_checkbox(self):
 
         selected_ingredients = []
@@ -112,13 +132,16 @@ class MainWindow(QMainWindow):
                 selected_ingredients.append(ingredient)
         return selected_ingredients
 
-    def make_checkboxes(self, my_ingredients):
+    def make_checkboxes(self, my_ingredients, checked):
         self.checkboxes_list.clear()
         for ingredient in my_ingredients:
             # Tworzę QCheckBox
             self.checkbox = QCheckBox(ingredient)
             self.checkbox.setStyleSheet("color: black; QCheckBox: white;")
-            self.checkbox.setChecked(False)
+            if checked:
+                self.checkbox.setChecked(True)
+            else:
+                self.checkbox.setChecked(False)
             # self.checkbox.stateChanged.connect(self.handle_checkbox)
             self.checkboxes_list.append(self.checkbox)
             self.checkboxes_layout.setAlignment(Qt.AlignTop)
@@ -126,7 +149,9 @@ class MainWindow(QMainWindow):
 
     def search_ingredients_by_prefix(self):
         # Tworzenie zapytania do bazy danych
-
+        self.selected_ingrediens = list(set(self.selected_ingrediens+(self.handle_checkbox())))
+        self.selected_i.clear()
+        self.selected_i.addItems(self.selected_ingrediens)
         layout = self.checkboxes_layout
         while layout.count():
             item = layout.takeAt(0)
@@ -135,15 +160,35 @@ class MainWindow(QMainWindow):
                 widget.deleteLater()
         prefix = self.search_input.text()
 
-        self.make_checkboxes(search_ingredients_by_prefix(prefix))
+        self.make_checkboxes(search_ingredients_by_prefix(prefix), False)
 
         print(search_ingredients_by_prefix(prefix))
         # self.ingredients =
         # self.checkboxes_layout.clear()
         # self.checkboxes_layout.addWidget()
+    def add_selected(self):
+        self.selected_ingrediens = list(set(self.selected_ingrediens + (self.handle_checkbox())))
+        self.selected_i.clear()
+        self.selected_i.addItems(self.selected_ingrediens)
+    def select_all(self):
+        layout = self.checkboxes_layout
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+        self.make_checkboxes(ingredients, True)
 
+    def unselect_all(self):
+        layout = self.checkboxes_layout
+        while layout.count():
+            item = layout.takeAt(0)
+            widget = item.widget()
+            if widget:
+                widget.deleteLater()
+        self.make_checkboxes(ingredients, False)
     def generate_recipes(self):
-        self.selected_ingrediens = self.handle_checkbox()
+        self.selected_ingrediens = list(set(self.selected_ingrediens + (self.handle_checkbox())))
         print("Selected Ingredients:", self.selected_ingrediens)
         # # Wyświetlanie przepisów po kliknięciu przycisku
         # self.recipes_list.clear()
@@ -165,6 +210,18 @@ class MainWindow(QMainWindow):
             print(recipe)
         else:
             self.recipes_list.addItem("No recipes found")
+
+    def delete_selected_i(self, item):
+        self.selected_item = item.text()
+
+    def delete(self):
+        self.selected_ingrediens.remove(self.selected_item)
+        self.selected_i.clear()
+        self.selected_i.addItems(self.selected_ingrediens)
+
+    def delete_all(self):
+        self.selected_ingrediens.clear()
+        self.selected_i.clear()
 
     def opening_instructions(self, item):
         selected_item = item.text()
