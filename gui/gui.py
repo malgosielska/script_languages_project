@@ -1,7 +1,7 @@
 import sys
 
 from PySide6.QtCore import (Qt)
-from PySide6.QtGui import (QColor, QPalette, QPixmap)
+from PySide6.QtGui import (QColor, QPalette, QPixmap, QIcon)
 from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout,
                                QPushButton, QVBoxLayout, QWidget, QStyleFactory, QMainWindow, QLabel, QListWidget,
                                QCheckBox, QScrollArea, QLineEdit, QGridLayout)
@@ -21,7 +21,8 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Recipe Generator")
         self.setMinimumWidth(1000)
-
+        self.window_icon = QIcon("cooking_icon.jpg")
+        self.setWindowIcon(self.window_icon)
         # Dodaję centralny widget
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
@@ -41,12 +42,13 @@ class MainWindow(QMainWindow):
 
         self.ingrediens_label = QLabel("SELECT INGREDIENTS")
         self.ingrediens_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.ingrediens_label.setStyleSheet("color: black;font-weight: bold;")
+        self.ingrediens_label.setStyleSheet("color: black;font-weight: bold;font-size: 15px;")
         self.ingrediens_label.setFixedSize(400, 30)  # Ustawienie szerokości na 400 pikseli i wysokości na 30 pikseli
         self.left_layout.addWidget(self.ingrediens_label)
 
         self.search_input = QLineEdit()
         self.search_button = QPushButton("Search")
+        self.search_button.setStyleSheet("font-size: 14px;")
         self.left_layout.addWidget(self.search_input)
         self.left_layout.addWidget(self.search_button)
 
@@ -73,8 +75,11 @@ class MainWindow(QMainWindow):
         self.left_layout.addWidget(self.scroll_area)
 
         self.button_select_all = QPushButton("Select all")
+        self.button_select_all.setStyleSheet("font-size: 14px;")
         self.button_unselect_all = QPushButton("Unselect all")
+        self.button_unselect_all.setStyleSheet("font-size: 14px;")
         self.button_add_selected = QPushButton("Add selected")
+        self.button_add_selected.setStyleSheet("font-size: 14px;")
 
         self.left_layout.addWidget(self.button_select_all)
         self.left_layout.addWidget(self.button_unselect_all)
@@ -90,7 +95,7 @@ class MainWindow(QMainWindow):
 
         self.selected_label = QLabel("SELECTED INGREDIENTS")
         self.selected_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.selected_label.setStyleSheet("color: black;font-weight: bold;")
+        self.selected_label.setStyleSheet("color: black;font-weight: bold;font-size: 15px")
         self.selected_label.setFixedSize(200, 30)
         self.central_layout.addWidget(self.selected_label)
 
@@ -98,6 +103,7 @@ class MainWindow(QMainWindow):
         list_palette = self.selected_i.palette()
         list_palette.setColor(QPalette.ColorRole.Base, Qt.white)
         self.selected_i.setPalette(list_palette)
+        self.selected_i.setStyleSheet("font-size:14px")
         self.central_layout.addWidget(self.selected_i)
         # Tworzę wertykalny right_layout
         self.right_layout = QVBoxLayout()
@@ -105,6 +111,7 @@ class MainWindow(QMainWindow):
 
         # Przycisk "Generate Recipes" na samej górze
         self.button = QPushButton("Generate Recipes")
+        self.button.setStyleSheet("font-size: 14px;")
         self.button.clicked.connect(self.generate_recipes)
         self.right_layout.addWidget(self.button, alignment=Qt.AlignTop)
 
@@ -117,7 +124,9 @@ class MainWindow(QMainWindow):
         self.selected_i.itemClicked.connect(self.delete_selected_i)
 
         self.button = QPushButton("Delete")
+        self.button.setStyleSheet("font-size: 14px;")
         self.del_all = QPushButton("Delete all")
+        self.del_all.setStyleSheet("font-size: 14px;")
         self.central_layout.addWidget(self.button, alignment=Qt.AlignBottom)
         self.button.clicked.connect(self.delete)
         self.central_layout.addWidget(self.del_all)
@@ -137,7 +146,7 @@ class MainWindow(QMainWindow):
         for ingredient in my_ingredients:
             # Tworzę QCheckBox
             self.checkbox = QCheckBox(ingredient)
-            self.checkbox.setStyleSheet("color: black; QCheckBox: white;")
+            self.checkbox.setStyleSheet("color: black; QCheckBox: white; font-size: 14px;")
             if checked:
                 self.checkbox.setChecked(True)
             else:
@@ -188,7 +197,7 @@ class MainWindow(QMainWindow):
                 widget.deleteLater()
         self.make_checkboxes(ingredients, False)
     def generate_recipes(self):
-        self.selected_ingrediens = list(set(self.selected_ingrediens + (self.handle_checkbox())))
+        # self.selected_ingrediens = list(set(self.selected_ingrediens + (self.handle_checkbox())))
         print("Selected Ingredients:", self.selected_ingrediens)
         # # Wyświetlanie przepisów po kliknięciu przycisku
         # self.recipes_list.clear()
@@ -237,6 +246,8 @@ class NextWindow(QDialog):
         self.setWindowTitle("Recipe")
         self.setMinimumWidth(1000)
         self.setMinimumHeight(500)
+        self.window_icon = QIcon("cooking_icon.jpg")
+        self.setWindowIcon(self.window_icon)
         self.layout = QGridLayout()
 
         self.label = QLabel(self.item)
