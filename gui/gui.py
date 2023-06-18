@@ -23,18 +23,18 @@ class MainWindow(QMainWindow):
         self.setMinimumWidth(1000)
         self.window_icon = QIcon("cooking_icon.jpg")
         self.setWindowIcon(self.window_icon)
-        # Dodaję centralny widget
+        # added central widget
         self.central_widget = QWidget()
         self.setCentralWidget(self.central_widget)
 
-        # Tworzę horyzontalny main_layout
+        # horizontal layout
         self.main_layout = QHBoxLayout(self.central_widget)
 
-        # Tworzę wertykalny left_layout i dodaję do main_layout
+        # vertical layout
         self.left_layout = QVBoxLayout()
         self.main_layout.addLayout(self.left_layout)
 
-        # Dodaję miejsce na zdjęcie w lewym górnym rogu
+        # added picture in left corner
         self.image_label = QLabel()
         self.image_label.setPixmap(QPixmap("pink_lady.jpg").scaledToWidth(100))
         self.image_label.setFixedSize(100, 100)
@@ -43,7 +43,7 @@ class MainWindow(QMainWindow):
         self.ingrediens_label = QLabel("SELECT INGREDIENTS")
         self.ingrediens_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.ingrediens_label.setStyleSheet("color: black;font-weight: bold;font-size: 15px;")
-        self.ingrediens_label.setFixedSize(400, 30)  # Ustawienie szerokości na 400 pikseli i wysokości na 30 pikseli
+        self.ingrediens_label.setFixedSize(400, 30)
         self.left_layout.addWidget(self.ingrediens_label)
 
         self.search_input = QLineEdit()
@@ -52,32 +52,32 @@ class MainWindow(QMainWindow):
         self.left_layout.addWidget(self.search_input)
         self.left_layout.addWidget(self.search_button)
 
-        self.selected_ingrediens = []
+        self.selected_ingredients = []
         self.checkboxes_list = []
-        # Wyświetlanie elementów listy składników
 
+        # adding checkboxes with available ingredients
         self.checkboxes_widget = QWidget()
         self.checkboxes_layout = QVBoxLayout()
 
         self.checkboxes_widget.setLayout(self.checkboxes_layout)
         self.make_checkboxes(ingredients, False)
-        # self.selected_ingrediens.append(ingredient)
+
         self.search_button.clicked.connect(self.search_ingredients_by_prefix)
 
         self.scroll_area = QScrollArea()
         self.scroll_area.setWidgetResizable(True)
 
-        # Ustawianie kontenera jako wewnętrznego widżetu kontenera przewijania
+        # adding scroll area
         self.scroll_area.setWidget(self.checkboxes_widget)
-
-        # Dodawanie kontenera przewijania do głównego okna
-        # self.set(scroll_area)
         self.left_layout.addWidget(self.scroll_area)
-
+        # adding buttons at the bottom of left_layout
+        # button that adds selected ingredients
         self.button_add_selected = QPushButton("Add selected")
         self.button_add_selected.setStyleSheet("font-size: 14px;")
+        # button that selects all ingredients
         self.button_select_all = QPushButton("Select all")
         self.button_select_all.setStyleSheet("font-size: 14px;")
+        # button that unselects all ingredients
         self.button_unselect_all = QPushButton("Unselect all")
         self.button_unselect_all.setStyleSheet("font-size: 14px;")
 
@@ -86,11 +86,12 @@ class MainWindow(QMainWindow):
         self.left_layout.addWidget(self.button_unselect_all)
 
         self.left_layout.addStretch(1)
-
+        # connecting buttons to functions
         self.button_select_all.clicked.connect(self.select_all)
         self.button_unselect_all.clicked.connect(self.unselect_all)
         self.button_add_selected.clicked.connect(self.add_selected)
 
+        # creating central layout that shows the list of selected ingredients by a user
         self.central_layout = QVBoxLayout()
         self.main_layout.addLayout(self.central_layout)
 
@@ -106,11 +107,24 @@ class MainWindow(QMainWindow):
         self.selected_i.setPalette(list_palette)
         self.selected_i.setStyleSheet("font-size:14px")
         self.central_layout.addWidget(self.selected_i)
-        # Tworzę wertykalny right_layout
+
+        # adding buttons that let delete selected ingredients
+        self.button = QPushButton("Delete")
+        self.button.setStyleSheet("font-size: 14px;")
+
+        self.del_all = QPushButton("Delete all")
+        self.del_all.setStyleSheet("font-size: 14px;")
+
+        self.central_layout.addWidget(self.button, alignment=Qt.AlignBottom)
+        self.button.clicked.connect(self.delete)
+        self.central_layout.addWidget(self.del_all)
+        self.del_all.clicked.connect(self.delete_all)
+
+        # adding right layout
         self.right_layout = QVBoxLayout()
         self.main_layout.addLayout(self.right_layout)
 
-        # Przycisk "Generate Recipes" na samej górze
+        # adding button that generates recipes based on selected ingredients
         self.button = QPushButton("Generate Recipes")
         self.button.setStyleSheet("font-size: 14px;")
         self.button.clicked.connect(self.generate_recipes)
@@ -121,17 +135,11 @@ class MainWindow(QMainWindow):
         list_palette.setColor(QPalette.ColorRole.Base, Qt.white)
         self.recipes_list.setPalette(list_palette)
         self.right_layout.addWidget(self.recipes_list)
+        # opening details to the selected recipe
         self.recipes_list.itemClicked.connect(self.opening_instructions)
         self.selected_i.itemClicked.connect(self.delete_selected_i)
         self.recipes_list.setStyleSheet("font-size: 14px;")
-        self.button = QPushButton("Delete")
-        self.button.setStyleSheet("font-size: 14px;")
-        self.del_all = QPushButton("Delete all")
-        self.del_all.setStyleSheet("font-size: 14px;")
-        self.central_layout.addWidget(self.button, alignment=Qt.AlignBottom)
-        self.button.clicked.connect(self.delete)
-        self.central_layout.addWidget(self.del_all)
-        self.del_all.clicked.connect(self.delete_all)
+
     def handle_checkbox(self):
 
         selected_ingredients = []
@@ -158,10 +166,10 @@ class MainWindow(QMainWindow):
             self.checkboxes_layout.addWidget(self.checkbox)
 
     def search_ingredients_by_prefix(self):
-        # Tworzenie zapytania do bazy danych
-        self.selected_ingrediens = list(set(self.selected_ingrediens+(self.handle_checkbox())))
+        # creating a call to the database
+        self.selected_ingredients = list(set(self.selected_ingredients + (self.handle_checkbox())))
         self.selected_i.clear()
-        self.selected_i.addItems(self.selected_ingrediens)
+        self.selected_i.addItems(self.selected_ingredients)
         layout = self.checkboxes_layout
         while layout.count():
             item = layout.takeAt(0)
@@ -173,13 +181,12 @@ class MainWindow(QMainWindow):
         self.make_checkboxes(search_ingredients_by_prefix(prefix), False)
 
         print(search_ingredients_by_prefix(prefix))
-        # self.ingredients =
-        # self.checkboxes_layout.clear()
-        # self.checkboxes_layout.addWidget()
+
     def add_selected(self):
-        self.selected_ingrediens = list(set(self.selected_ingrediens + (self.handle_checkbox())))
+        self.selected_ingredients = list(set(self.selected_ingredients + (self.handle_checkbox())))
         self.selected_i.clear()
-        self.selected_i.addItems(self.selected_ingrediens)
+        self.selected_i.addItems(self.selected_ingredients)
+
     def select_all(self):
         layout = self.checkboxes_layout
         while layout.count():
@@ -197,24 +204,14 @@ class MainWindow(QMainWindow):
             if widget:
                 widget.deleteLater()
         self.make_checkboxes(ingredients, False)
+
     def generate_recipes(self):
-        # self.selected_ingrediens = list(set(self.selected_ingrediens + (self.handle_checkbox())))
-        print("Selected Ingredients:", self.selected_ingrediens)
-        # # Wyświetlanie przepisów po kliknięciu przycisku
-        # self.recipes_list.clear()
-        # # matching_recipes = [recipe for recipe in gui.recipes if
-        # #                     all(ingredient in gui.selected_ingredients for ingredient in
-        # #                         recipe["specific_ingredients"])]
-        # # if matching_recipes:
-        # #     for recipe in matching_recipes:
-        # #         gui.recipes_list.addItem(recipe["recipe_title"])
-        # # else:
-        # self.recipes_list.addItem("No recipes found")
-        # gui.recipes_list.addItems(gui.recipes)
+
+        print("Selected Ingredients:", self.selected_ingredients)
         self.selected_i.clear()
-        self.selected_i.addItems(self.selected_ingrediens)
+        self.selected_i.addItems(self.selected_ingredients)
         self.recipes_list.clear()
-        recipe = get_recipes_by_ingredients(self.selected_ingrediens)
+        recipe = get_recipes_by_ingredients(self.selected_ingredients)
         if recipe:
             self.recipes_list.addItems(recipe)
             print(recipe)
@@ -225,12 +222,12 @@ class MainWindow(QMainWindow):
         self.selected_item = item.text()
 
     def delete(self):
-        self.selected_ingrediens.remove(self.selected_item)
+        self.selected_ingredients.remove(self.selected_item)
         self.selected_i.clear()
-        self.selected_i.addItems(self.selected_ingrediens)
+        self.selected_i.addItems(self.selected_ingredients)
 
     def delete_all(self):
-        self.selected_ingrediens.clear()
+        self.selected_ingredients.clear()
         self.selected_i.clear()
 
     def opening_instructions(self, item):
@@ -239,6 +236,7 @@ class MainWindow(QMainWindow):
         next_window.exec()
 
 
+# next window which are details to a selected recipe
 class NextWindow(QDialog):
     def __init__(self, item):
         super().__init__()
@@ -256,7 +254,7 @@ class NextWindow(QDialog):
         self.label.setStyleSheet("font-size: 40px;color: black;font-weight: bold;")
         self.label.setFixedHeight(100)
 
-        # Dodaję centralny widget
+        # adding vertical layout
         self.ingredients_label = QLabel("Ingredients")
         self.ingredients_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.ingredients_label.setFixedHeight(50)
@@ -266,20 +264,21 @@ class NextWindow(QDialog):
         self.instructions_label.setStyleSheet("font-size: 25px;color: black;font-weight: bold;")
         self.instructions_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
 
+        # list of ingredients needed in the recipe
         self.ingredients_text = QLabel(get_details_by_name(item)[0])
         self.ingredients_text.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.ingredients_text.setStyleSheet("font-size: 20px;color: black;")
 
+        # list of instructions for the recipe
         self.instructions_text = QLabel(get_details_by_name(item)[1])
         self.instructions_text.setAlignment(Qt.AlignmentFlag.AlignLeft)
         self.instructions_text.setStyleSheet("font-size: 20px;color: black;")
 
-        # Tworzę horyzontalny main_layout
-        self.layout.addWidget(self.label, 0, 0, 1, 2)  # Dodaj labelkę na górze
-        self.layout.addWidget(self.ingredients_label, 1, 0)  # Dodaj etykietę dla składników
-        self.layout.addWidget(self.instructions_label, 1, 1)  # Dodaj etykietę dla instrukcji
-        self.layout.addWidget(self.ingredients_text, 2, 0)  # Dodaj opis składników
-        self.layout.addWidget(self.instructions_text, 2, 1)  # Dodaj instrukcje
+        self.layout.addWidget(self.label, 0, 0, 1, 2)
+        self.layout.addWidget(self.ingredients_label, 1, 0)
+        self.layout.addWidget(self.instructions_label, 1, 1)
+        self.layout.addWidget(self.ingredients_text, 2, 0)
+        self.layout.addWidget(self.instructions_text, 2, 1)
 
         self.setLayout(self.layout)
 
@@ -300,7 +299,6 @@ if __name__ == '__main__':
 
     app.setPalette(pink_palette)
 
-    # todo wczytywanie danych z bazy
     ingredients = get_ingredients_names()
     recipes = get_recipes_names()
 
