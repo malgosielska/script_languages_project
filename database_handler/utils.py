@@ -15,11 +15,3 @@ def get_ingredients_names():
     for ingredient in ingredients:
         names.append(ingredient.name)
     return names
-
-
-def get_ingredients_map():
-    ingredients_map = {}
-    ingredients = Ingredient.select()
-
-    for ingredient in ingredients:
-        ingredients_map[ingredient.get_id] = ingredient.name
