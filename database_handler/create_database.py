@@ -1,6 +1,7 @@
 from peewee import *
+from database_handler.constants import DATABASE
 
-database = SqliteDatabase('../database_handler/recipes.db')
+database = DATABASE
 
 
 # definitions of table models

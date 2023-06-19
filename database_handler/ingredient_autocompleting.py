@@ -1,8 +1,7 @@
-from peewee import *
-
 from database_handler.create_database import Ingredient
+from database_handler.constants import DATABASE
 
-database = SqliteDatabase('../database_handler/recipes.db')
+database = DATABASE
 
 
 def search_ingredients_by_prefix(prefix):

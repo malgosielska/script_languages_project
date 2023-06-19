@@ -1,8 +1,7 @@
-from peewee import *
-
 from database_handler.create_database import Recipe, IngredientInRecipe, Ingredient
+from database_handler.constants import DATABASE
 
-database = SqliteDatabase('../database_handler/recipes.db')
+database = DATABASE
 
 
 def get_all_recipe_ids():

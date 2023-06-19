@@ -180,8 +180,6 @@ class MainWindow(QMainWindow):
 
         self.make_checkboxes(search_ingredients_by_prefix(prefix), False)
 
-        print(search_ingredients_by_prefix(prefix))
-
     def add_selected(self):
         self.selected_ingredients = list(set(self.selected_ingredients + (self.handle_checkbox())))
         self.selected_i.clear()
@@ -207,14 +205,12 @@ class MainWindow(QMainWindow):
 
     def generate_recipes(self):
 
-        print("Selected Ingredients:", self.selected_ingredients)
         self.selected_i.clear()
         self.selected_i.addItems(self.selected_ingredients)
         self.recipes_list.clear()
         recipe = get_recipes_by_ingredients(self.selected_ingredients)
         if recipe:
             self.recipes_list.addItems(recipe)
-            print(recipe)
         else:
             self.recipes_list.addItem("No recipes found")
 
@@ -243,8 +239,8 @@ class NextWindow(QDialog):
 
         self.item = item
         self.setWindowTitle("Recipe")
-        self.setMinimumWidth(1000)
-        self.setMinimumHeight(500)
+        self.setMinimumWidth(1300)
+        self.setMinimumHeight(600)
         self.window_icon = QIcon("cooking_icon.jpg")
         self.setWindowIcon(self.window_icon)
         self.layout = QGridLayout()
