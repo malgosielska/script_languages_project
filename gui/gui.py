@@ -1,21 +1,22 @@
 import sys
 
-from PySide6.QtCore import (Qt)
-from PySide6.QtGui import (QColor, QPalette, QPixmap, QIcon)
+from PySide6.QtCore import (Qt, QSize)
+from PySide6.QtGui import (QPalette, QPixmap, QIcon)
 from PySide6.QtWidgets import (QApplication, QDialog, QHBoxLayout,
-                               QPushButton, QVBoxLayout, QWidget, QStyleFactory, QMainWindow, QLabel, QListWidget,
+                               QPushButton, QVBoxLayout, QWidget, QMainWindow, QLabel, QListWidget,
                                QCheckBox, QScrollArea, QLineEdit, QGridLayout)
 
 from database_handler.ingredient_autocompleting import search_ingredients_by_prefix
 from database_handler.recipe_generator import get_recipes_by_ingredients, get_details_by_name
 from database_handler.utils import get_ingredients_names, get_recipes_names
+from gui_utils import create_round_mask, blue_theme, orange_theme, violet_theme, pink_theme
 
 
 class MainWindow(QMainWindow):
 
-    def __init__(self, ingredients, recipes):
+    def __init__(self, ingredients, recipes, avatar):
         super().__init__()
-
+        self.avatar = avatar
         self.ingredients = ingredients
         self.recipes = recipes
 
@@ -36,8 +37,9 @@ class MainWindow(QMainWindow):
 
         # added picture in left corner
         self.image_label = QLabel()
-        self.image_label.setPixmap(QPixmap("pink_lady.jpg").scaledToWidth(100))
+        self.image_label.setPixmap(QPixmap(self.avatar).scaledToWidth(100))
         self.image_label.setFixedSize(100, 100)
+        self.image_label.setMask(create_round_mask(100))
         self.left_layout.addWidget(self.image_label)
 
         self.ingrediens_label = QLabel("SELECT INGREDIENTS")
@@ -279,26 +281,70 @@ class NextWindow(QDialog):
         self.setLayout(self.layout)
 
 
+class AvatarSelectionWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("avatar")
+        self.setMinimumWidth(1000)
+        self.setMinimumHeight(500)
+        self.window_icon = QIcon("cooking_icon.jpg")
+        self.setWindowIcon(self.window_icon)
+        self.main_layout = QVBoxLayout()
+        self.setLayout(self.main_layout)
+        self.avatar_label = QLabel("Choose your avatar and theme")
+
+        self.avatar_label.setStyleSheet("color: black;font-weight: bold;font-size: 30px;")
+        self.avatar_label.setFixedHeight(50)
+
+        self.avatar_label.setAlignment(Qt.AlignCenter)
+        self.main_layout.addWidget(self.avatar_label)
+
+        self.central_layout = QGridLayout()
+
+        self.main_layout.addLayout(self.central_layout)
+
+        # creating buttons with available avatars
+        for i in range(1, 7):
+            self.avatar_button = QPushButton()
+            self.avatar_button.setFixedSize(150, 150)
+            self.avatar_file = f"avatars/avatar_{i}.jpg"
+            self.avatar_button.setIcon(QIcon(self.avatar_file))
+            self.avatar_button.setIconSize(QSize(150, 150))
+            self.avatar_button.clicked.connect(self.open_main_window)
+            self.avatar_button.setMask(create_round_mask(150))
+            self.central_layout.addWidget(self.avatar_button, (i - 1) // 3, (i - 1) % 3)
+
+            self.avatar_button.path = self.avatar_file
+
+    def open_main_window(self):
+
+        self.ui = MainWindow(ingredients, recipes, self.sender().path)
+        self.ui.show()
+        self.changing_theme()
+        self.close()
+
+    def changing_theme(self):
+        theme = self.sender().path
+        match theme:
+            case "avatars/avatar_1.jpg":
+                blue_theme(app)
+            case "avatars/avatar_2.jpg":
+                blue_theme(app)
+            case "avatars/avatar_5.jpg":
+                orange_theme(app)
+            case "avatars/avatar_6.jpg":
+                violet_theme(app)
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
 
-    app.setStyle(QStyleFactory.create("Fusion"))
-    pink_palette = QPalette()
-    pink_palette.setColor(QPalette.ColorRole.Window, QColor(255, 228, 225))
-    pink_palette.setColor(QPalette.ColorRole.Text, QColor(128, 0, 0))
-    pink_palette.setColor(QPalette.ColorRole.Button, QColor(255, 105, 180))
-    pink_palette.setColor(QPalette.ColorRole.ButtonText, QColor(128, 0, 0))
-    pink_palette.setColor(QPalette.ColorRole.BrightText, Qt.GlobalColor.red)
-    pink_palette.setColor(QPalette.ColorRole.Link, QColor(255, 20, 147))
-    pink_palette.setColor(QPalette.ColorRole.Highlight, QColor(255, 20, 147))
-    pink_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(128, 0, 0))
-
-    app.setPalette(pink_palette)
+    pink_theme(app)
 
     ingredients = get_ingredients_names()
     recipes = get_recipes_names()
 
     dialog = QDialog()
-    ui = MainWindow(ingredients, recipes)
+    ui = AvatarSelectionWindow()
     ui.show()
     sys.exit(app.exec())
