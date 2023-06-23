@@ -30,9 +30,7 @@ def blue_theme(app):
     blue_palette.setColor(QPalette.ColorRole.Highlight, QColor(0, 102, 204))
     blue_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(0, 51, 102))
 
-    app.setPalette(blue_palette)
-    for widget in app.allWidgets():
-        widget.setPalette(blue_palette)
+    updating_app_palette(app, blue_palette)
 
 
 def violet_theme(app):
@@ -48,9 +46,7 @@ def violet_theme(app):
     violet_palette.setColor(QPalette.ColorRole.Highlight, QColor(174, 129, 255))
     violet_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(70, 35, 105))
 
-    app.setPalette(violet_palette)
-    for widget in app.allWidgets():
-        widget.setPalette(violet_palette)
+    updating_app_palette(app, violet_palette)
 
 
 def orange_theme(app):
@@ -66,9 +62,7 @@ def orange_theme(app):
     orange_palette.setColor(QPalette.ColorRole.Highlight, QColor(255, 128, 0))
     orange_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(153, 76, 0))
 
-    app.setPalette(orange_palette)
-    for widget in app.allWidgets():
-        widget.setPalette(orange_palette)
+    updating_app_palette(app, orange_palette)
 
 
 def pink_theme(app):
@@ -85,3 +79,9 @@ def pink_theme(app):
     pink_palette.setColor(QPalette.ColorRole.HighlightedText, QColor(128, 0, 0))
 
     app.setPalette(pink_palette)
+
+
+def updating_app_palette(app, palette):
+    app.setPalette(palette)
+    for widget in app.allWidgets():
+        widget.setPalette(palette)
