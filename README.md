@@ -27,7 +27,7 @@ The "Virtual Cookbook" project is a simple Python program that allows users to p
 
 3. Run the program:
 
-   `python main.py`
+   `python ./gui/gui.py`
 
 ## Authors
 
